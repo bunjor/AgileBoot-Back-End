@@ -208,7 +208,7 @@ public class FileUploadUtils {
      * @param fileName 真实文件名
      */
     public static HttpHeaders getDownloadHeader(String fileName) {
-        String randomFileName = System.currentTimeMillis() + "_" + fileName;
+        String randomFileName = "%d_%s".formatted(System.currentTimeMillis(), fileName);
         String fileNameUrlEncoded = URLUtil.encode(randomFileName, CharsetUtil.CHARSET_UTF_8);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Disposition", String.format("attachment;filename=%s", fileNameUrlEncoded));

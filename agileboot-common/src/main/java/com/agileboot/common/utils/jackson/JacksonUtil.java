@@ -43,6 +43,7 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.reflection.Jdk;
 
 /**
  * Jackson工具类 优势： 数据量高于百万的时候，速度和FastJson相差极小 API和注解支持最完善，可定制性最强
@@ -116,6 +117,7 @@ public class JacksonUtil {
         //序列化BigDecimal时之间输出原始数字还是科学计数, 默认false, 即是否以toPlainString()科学计数方式来输出
         objectMapper.enable(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
         //识别Java8时间
+        objectMapper.findAndRegisterModules();
         objectMapper.registerModule(new ParameterNamesModule());
         objectMapper.registerModule(new Jdk8Module());
         JavaTimeModule javaTimeModule = new JavaTimeModule();

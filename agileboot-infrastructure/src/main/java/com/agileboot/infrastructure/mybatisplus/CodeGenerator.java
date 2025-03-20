@@ -97,7 +97,7 @@ public class CodeGenerator {
         generator.globalConfig(
             builder -> builder
                 // override old code of file
-                .fileOverride()
+//                .fileOverride()
                 .outputDir(System.getProperty("user.dir") + module + "/src/main/java")
                 // use date type under package of java utils
                 .dateType(DateType.ONLY_DATE)
@@ -123,25 +123,24 @@ public class CodeGenerator {
             .mapper("mapper")
             .xml("mapper.xml")
             .controller("controller")
-            .other("other")
+//            .other("other")
             // define dir related to OutputFileType(entity,mapper,service,controller,mapper.xml)
-            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") + module
-                + "/src/main/resources/mapper/system/test"))
+            .pathInfo(Collections.singletonMap(OutputFile.xml, System.getProperty("user.dir") + module + "/src/main/resources/mapper/system/test"))
             .build());
     }
 
-    private void templateConfig(FastAutoGenerator generator) {
-        //  customization code template. disable if you don't have specific requirement.
-        generator.templateConfig(builder -> builder
-            .disable(TemplateType.ENTITY)
-            .entity("/templates/entity.java")
-            .service("/templates/service.java")
-            .serviceImpl("/templates/serviceImpl.java")
-            .mapper("/templates/mapper.java")
-            .mapperXml("/templates/mapper.xml")
-            .controller("/templates/controller.java")
-            .build());
-    }
+//    private void templateConfig(FastAutoGenerator generator) {
+//        //  customization code template. disable if you don't have specific requirement.
+//        generator.templateConfig(builder -> builder
+//            .disable(TemplateType.ENTITY)
+//            .entity("/templates/entity.java")
+//            .service("/templates/service.java")
+//            .serviceImpl("/templates/serviceImpl.java")
+//            .mapper("/templates/mapper.java")
+//            .xml("/templates/mapper.xml")
+//            .controller("/templates/controller.java")
+//            .build());
+//    }
 
     private void injectionConfig(FastAutoGenerator generator) {
         //  customization code template. disable if you don't have specific requirement.

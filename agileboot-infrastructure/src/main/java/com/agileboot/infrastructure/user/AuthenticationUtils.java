@@ -5,6 +5,7 @@ import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.infrastructure.user.app.AppLoginUser;
 import com.agileboot.infrastructure.user.web.SystemLoginUser;
+import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class AuthenticationUtils {
 
     private AuthenticationUtils() {}
+
+    // 推荐全局单例（线程安全）
+    public static final UserAgentAnalyzer uaa = UserAgentAnalyzer
+            .newBuilder()
+            .withField("AgentName")
+            .withField("AgentVersion")
+            .withField("OperatingSystemName")
+            .withField("OperatingSystemVersion")
+            .withField("DeviceClass")
+            .withField("DeviceBrand")
+            .withCache(10000)
+            .build();
 
     /**
      * 用户ID

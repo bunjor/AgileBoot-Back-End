@@ -7,41 +7,37 @@
         <groupId>com.agileboot</groupId>
         <version>1.0.0</version>
     </parent>
-    <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>jar</packaging>
     <artifactId>agileboot-api</artifactId>
-
     <description>
         外部API
     </description>
 
     <dependencies>
-
-        <!-- 核心模块-->
+        <!-- 基础设施模块 -->
         <dependency>
             <groupId>com.agileboot</groupId>
             <artifactId>agileboot-infrastructure</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
-        <!--使用undertow依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
-
-        <!-- 业务领域 -->
+        <!-- 业务领域模块 -->
         <dependency>
             <groupId>com.agileboot</groupId>
             <artifactId>agileboot-domain</artifactId>
         </dependency>
 
+        <!-- 测试依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
-
 </project>

@@ -8,20 +8,19 @@ import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode;
 import com.agileboot.domain.common.cache.RedisCacheService;
 import com.agileboot.infrastructure.user.web.SystemLoginUser;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * token验证处理
@@ -71,7 +70,8 @@ public class TokenService {
                 String uuid = (String) claims.get(Token.LOGIN_USER_KEY);
 
                 return redisCache.loginUserCache.getObjectOnlyInCacheById(uuid);
-            } catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException jwtException) {
+            } catch (SignatureException | MalformedJwtException | UnsupportedJwtException |
+                     IllegalArgumentException jwtException) {
                 log.error("parse token failed.", jwtException);
                 throw new ApiException(jwtException, ErrorCode.Client.INVALID_TOKEN);
             } catch (Exception e) {
@@ -99,6 +99,7 @@ public class TokenService {
 
     /**
      * 当超过20分钟，自动刷新token
+     *
      * @param loginUser 登录用户
      */
     public void refreshToken(SystemLoginUser loginUser) {
@@ -110,30 +111,52 @@ public class TokenService {
         }
     }
 
+//
+//    /**
+//     * 从数据声明生成令牌
+//     *
+//     * @param claims 数据声明
+//     * @return 令牌
+//     */
+//    private String generateToken(Map<String, Object> claims) {
+//        return Jwts.builder()
+//                .claims(claims)
+//                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+//                .compact();
+//    }
+//
+//    /**
+//     * 从令牌中获取数据声明
+//     *
+//     * @param token 令牌
+//     * @return 数据声明
+//     */
+//    private Claims parseToken(String token) {
+//        return Jwts.parser()
+//                .decryptWith(Keys.hmacShaKeyFor(secret.getBytes()))
+//                .build()
+//                .parseSignedClaims(token)
+//                .getPayload();
+//    }
 
-    /**
-     * 从数据声明生成令牌
-     *
-     * @param claims 数据声明
-     * @return 令牌
-     */
+    // 生成 Token
     private String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS512, secret).compact();
+                .claims(claims)
+                .signWith(
+                        Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)),
+                        Jwts.SIG.HS512 // 显式指定算法
+                )
+                .compact();
     }
 
-    /**
-     * 从令牌中获取数据声明
-     *
-     * @param token 令牌
-     * @return 数据声明
-     */
+    // 解析 Token
     private Claims parseToken(String token) {
         return Jwts.parser()
-            .setSigningKey(secret)
-            .parseClaimsJws(token)
-            .getBody();
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     /**

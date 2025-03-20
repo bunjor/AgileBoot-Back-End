@@ -5,29 +5,29 @@
     <parent>
         <artifactId>agileboot</artifactId>
         <groupId>com.agileboot</groupId>
+        <!-- 确保父工程版本与升级后一致 -->
         <version>1.0.0</version>
     </parent>
-    <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
-
+    <packaging>jar</packaging>
     <artifactId>agileboot-admin</artifactId>
-
     <description>
         web服务入口
     </description>
 
     <dependencies>
-
-        <!-- 业务领域 -->
+        <!-- 核心业务领域 -->
         <dependency>
             <groupId>com.agileboot</groupId>
             <artifactId>agileboot-domain</artifactId>
         </dependency>
 
+        <!-- 测试依赖优化 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <!-- 更新排除项 -->
             <exclusions>
                 <exclusion>
                     <groupId>org.junit.vintage</groupId>
@@ -35,29 +35,5 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-
-
 </project>

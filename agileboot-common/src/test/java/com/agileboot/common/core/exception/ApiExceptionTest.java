@@ -1,7 +1,8 @@
 package com.agileboot.common.core.exception;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ApiExceptionTest {
 
@@ -14,7 +15,7 @@ public class ApiExceptionTest {
         String formatWithArray = String.format(errorMsg, array);
         String formatWithVarargs = String.format(errorMsg, "param1", "param2", "param3");
 
-        Assert.assertEquals(formatWithVarargs, formatWithArray);
+        Assertions.assertEquals(formatWithVarargs, formatWithArray);
     }
 
     @Test
@@ -23,7 +24,7 @@ public class ApiExceptionTest {
 
         String format = String.format(errorMsg, "param1", null, null);
 
-        Assert.assertEquals("these parameters are null: param1, null, null.", format);
+        Assertions.assertEquals("these parameters are null: param1, null, null.", format);
     }
 
 }

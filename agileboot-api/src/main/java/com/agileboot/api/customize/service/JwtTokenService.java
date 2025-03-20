@@ -9,11 +9,12 @@ import com.agileboot.infrastructure.user.web.SystemLoginUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,9 +73,6 @@ public class JwtTokenService {
         return null;
     }
 
-
-
-
     /**
      * 从数据声明生成令牌
      *
@@ -83,8 +81,9 @@ public class JwtTokenService {
      */
     public String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS512, secret).compact();
+                .claims(claims)
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes()), Jwts.SIG.HS512)
+                .compact();
     }
 
     /**
@@ -95,9 +94,10 @@ public class JwtTokenService {
      */
     public Claims parseToken(String token) {
         return Jwts.parser()
-            .setSigningKey(secret)
-            .parseClaimsJws(token)
-            .getBody();
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     /**

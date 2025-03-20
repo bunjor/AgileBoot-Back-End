@@ -1,15 +1,18 @@
 package com.agileboot.infrastructure.user.base;
 
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.common.utils.ip.IpRegionUtil;
+import com.agileboot.infrastructure.user.AuthenticationUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import eu.bitwalker.useragentutils.UserAgent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.basjes.parse.useragent.UserAgent;
+import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,13 +56,13 @@ public class BaseLoginUser implements UserDetails {
      *
      */
     public void fillLoginInfo() {
-        UserAgent userAgent = UserAgent.parseUserAgentString(ServletHolderUtil.getRequest().getHeader("User-Agent"));
-        String ip = ServletUtil.getClientIP(ServletHolderUtil.getRequest());
+        UserAgent userAgent = AuthenticationUtils.uaa.parse((ServletHolderUtil.getRequest().getHeader("User-Agent")));
+        String ip = JakartaServletUtil.getClientIP(ServletHolderUtil.getRequest());
 
         this.getLoginInfo().setIpAddress(ip);
         this.getLoginInfo().setLocation(IpRegionUtil.getBriefLocationByIp(ip));
-        this.getLoginInfo().setBrowser(userAgent.getBrowser().getName());
-        this.getLoginInfo().setOperationSystem(userAgent.getOperatingSystem().getName());
+        this.getLoginInfo().setBrowser(userAgent.getValue("AgentName"));
+        this.getLoginInfo().setOperationSystem(userAgent.getValue("OperatingSystemName"));
         this.getLoginInfo().setLoginTime(System.currentTimeMillis());
     }
 
